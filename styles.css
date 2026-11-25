@@ -1,0 +1,1368 @@
+/* ==========================================================================
+   Soniaa S. — a living tree
+   Cosy sketchbook palette & tactile paper atmosphere
+   ========================================================================== */
+
+:root {
+  --paper: #f5eedf;
+  --paper-card: #faf5ea;
+  --ink: #3b2f2a;
+  --ink-muted: #68564d;
+  --amber: #e9a23b;
+  --amber-deep: #b87314;
+  --sage: #8fa98a;
+  --sage-deep: #4e6b4a;
+  --rose: #d98b84;
+  --rose-deep: #a4564f;
+  --hairline: rgba(59, 47, 42, 0.14);
+
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-hand: "Caveat", "Brush Script MT", cursive;
+  --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --stage-aspect: 2272 / 1884;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visible amber focus ring across all interactive elements */
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link: hidden offscreen until keyboard focus */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.55rem 0.9rem;
+  background: var(--paper-card);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 160ms var(--ease-settle);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Paper Atmosphere (SVG turbulence grain + golden-hour glow + soft vignette)
+   ========================================================================== */
+
+.paper-atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.paper-grain-svg {
+  position: absolute;
+}
+
+.paper-grain-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.045;
+  filter: url(#paper-grain-filter);
+}
+
+.paper-golden-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 62% 54% at 86% 12%,
+    rgba(233, 162, 59, 0.16) 0%,
+    rgba(233, 162, 59, 0.05) 45%,
+    transparent 76%
+  );
+}
+
+.paper-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 88% 85% at 50% 50%,
+    transparent 62%,
+    rgba(59, 47, 42, 0.08) 100%
+  );
+}
+
+/* ==========================================================================
+   Main Stage Shell & Identity
+   ========================================================================== */
+
+.experience {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.identity {
+  position: fixed;
+  top: clamp(0.9rem, 2.2vh, 1.5rem);
+  left: clamp(1rem, 2.5vw, 2rem);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.identity-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.identity-role {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+}
+
+/* Stage wrapper: fits viewport on desktop, scrollable 150vw on portrait mobile */
+.stage-scroller {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.75rem 1rem 2.75rem;
+}
+
+.tree-stage {
+  position: relative;
+  width: min(94vw, calc((100dvh - 4rem) * 2272 / 1884));
+  aspect-ratio: var(--stage-aspect);
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Warm earth wash beneath the ~62% ground line when The Roots opens */
+.roots-earth-wash {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 59%;
+  bottom: 2%;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: 48% 52% 45% 45% / 20% 20% 60% 60%;
+  background: radial-gradient(
+    ellipse 78% 68% at 50% 45%,
+    rgba(164, 114, 72, 0.22) 0%,
+    rgba(196, 146, 102, 0.11) 52%,
+    transparent 82%
+  );
+  mix-blend-mode: multiply;
+  filter: blur(18px);
+  transform: scale(0.96);
+  transition: opacity 900ms var(--ease-settle), transform 900ms var(--ease-settle);
+}
+
+.tree-stage.is-roots-warmed .roots-earth-wash {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tree-picture,
+.tree-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tree-image {
+  object-fit: contain;
+}
+
+/* Fallback blending if original JPEG loads instead of transparent WebP */
+.tree-image.is-jpeg-fallback {
+  mix-blend-mode: multiply;
+  filter: contrast(1.12) brightness(1.04);
+}
+
+/* ==========================================================================
+   Ground-Upward First-Load Reveal (~1.8s, compositor transform/opacity only)
+   ========================================================================== */
+
+.intro-veil {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-color: var(--paper);
+  pointer-events: none;
+  z-index: 3;
+  opacity: 1;
+  will-change: transform, opacity;
+}
+
+.intro-veil--canopy {
+  top: 0;
+  bottom: 38%;
+  transform-origin: top center;
+  animation: veilLiftUp 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+
+.intro-veil--roots {
+  top: 62%;
+  bottom: 0;
+  transform-origin: bottom center;
+  animation: veilFadeDown 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.25s forwards;
+}
+
+@keyframes veilLiftUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 0.35;
+    transform: translateY(-18%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-28%);
+    visibility: hidden;
+  }
+}
+
+@keyframes veilFadeDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(14%);
+    visibility: hidden;
+  }
+}
+
+/* ==========================================================================
+   Drifting Pollen / Dust Motes (capped at 24, paused when tab hidden)
+   ========================================================================== */
+
+.pollen-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 4;
+}
+
+.pollen-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(233, 162, 59, 0.72) 0%,
+    rgba(233, 162, 59, 0.18) 65%,
+    transparent 100%
+  );
+  will-change: transform, opacity;
+  animation: pollenFloat var(--dur, 18s) ease-in-out var(--delay, 0s) infinite alternate;
+}
+
+@keyframes pollenFloat {
+  0% {
+    opacity: var(--op-min, 0.16);
+    transform: translate3d(0, 0, 0) scale(0.9);
+  }
+  50% {
+    opacity: var(--op-max, 0.55);
+    transform: translate3d(var(--dx, 18px), var(--dy, -22px), 0) scale(1.1);
+  }
+  100% {
+    opacity: var(--op-min, 0.2);
+    transform: translate3d(calc(var(--dx, 18px) * -0.6), calc(var(--dy, -22px) * 1.4), 0) scale(0.95);
+  }
+}
+
+.is-paused .pollen-mote,
+.is-paused .hotspot-sway,
+.is-paused .butterfly-wing {
+  animation-play-state: paused !important;
+}
+
+/* ==========================================================================
+   Hotspots: Positioned by exact percentages of .tree-stage
+   ========================================================================== */
+
+.tree-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+}
+
+.hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Watercolor bloom behind the tip marker */
+.hotspot-wash {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  filter: blur(8px);
+  opacity: 0.22;
+  transform: scale(0.65);
+  transition:
+    opacity 320ms var(--ease-settle),
+    transform 380ms var(--ease-settle);
+}
+
+.hotspot--amber .hotspot-wash {
+  background: radial-gradient(circle, rgba(233, 162, 59, 0.65) 0%, rgba(233, 162, 59, 0.12) 60%, transparent 78%);
+}
+
+.hotspot--sage .hotspot-wash {
+  background: radial-gradient(circle, rgba(143, 169, 138, 0.65) 0%, rgba(143, 169, 138, 0.14) 60%, transparent 78%);
+}
+
+.hotspot--rose .hotspot-wash {
+  background: radial-gradient(circle, rgba(217, 139, 132, 0.65) 0%, rgba(217, 139, 132, 0.14) 60%, transparent 78%);
+}
+
+.hotspot--bud .hotspot-wash {
+  opacity: 0.08;
+  transform: scale(0.5);
+}
+
+.hotspot:hover .hotspot-wash,
+.hotspot:focus-visible .hotspot-wash,
+.hotspot.is-near .hotspot-wash {
+  opacity: 0.72;
+  transform: scale(1.12);
+}
+
+.hotspot.is-explored .hotspot-wash {
+  opacity: 0.56;
+  transform: scale(1);
+}
+
+/* Inner swaying botanical SVG container (animating inner element keeps button hit-box steady) */
+.hotspot-sway {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  pointer-events: none;
+  animation: tipSway 6.5s ease-in-out var(--sway-delay, 0s) infinite alternate;
+  transition: transform 240ms var(--ease-settle);
+}
+
+@keyframes tipSway {
+  0% {
+    transform: rotate(-3deg) translateY(0);
+  }
+  100% {
+    transform: rotate(3.5deg) translateY(-1.5px);
+  }
+}
+
+.hotspot:hover .hotspot-sway,
+.hotspot:focus-visible .hotspot-sway,
+.hotspot.is-near .hotspot-sway {
+  transform: scale(1.18);
+}
+
+/* Bud playful wiggle when tapped */
+.hotspot.is-wiggling .hotspot-sway {
+  animation: budWiggle 460ms var(--ease-settle);
+}
+
+@keyframes budWiggle {
+  0% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-16deg) scale(1.12); }
+  45% { transform: rotate(14deg) scale(1.1); }
+  70% { transform: rotate(-9deg) scale(1.06); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.hotspot-blossom {
+  width: 32px;
+  height: 32px;
+  overflow: visible;
+  transition: transform 320ms var(--ease-settle);
+}
+
+.hotspot.is-explored .hotspot-blossom {
+  transform: scale(1.14);
+}
+
+/* Saved leaf indicator anchored to branch tip when visitor leaves a note */
+.hotspot-leaf-badge {
+  position: absolute;
+  right: -4px;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.4) rotate(-18deg);
+  transition: opacity 280ms var(--ease-settle), transform 320ms var(--ease-settle);
+}
+
+.hotspot.has-leaf .hotspot-leaf-badge {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* Handwritten label revealed when butterfly approaches, hovered, or focused */
+.hotspot-label {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translate(-50%, -4px);
+  white-space: nowrap;
+  font-family: var(--font-hand);
+  font-size: 1.18rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
+  background: rgba(245, 238, 223, 0.9);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-settle), transform 200ms var(--ease-settle);
+}
+
+/* Keep crown label positioned gracefully below tip */
+.hotspot[data-id="crown"] .hotspot-label {
+  top: calc(100% + 4px);
+}
+
+/* Keep root labels sitting cleanly above root tips so they stay inside the stage */
+.hotspot[data-id="rootLeft"] .hotspot-label,
+.hotspot[data-id="rootRight"] .hotspot-label {
+  top: auto;
+  bottom: calc(100% + 2px);
+}
+
+.hotspot:hover .hotspot-label,
+.hotspot:focus-visible .hotspot-label,
+.hotspot.is-near .hotspot-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ==========================================================================
+   Bud Tooltip ("Still growing: a next experiment.")
+   ========================================================================== */
+
+.bud-tooltip {
+  position: absolute;
+  z-index: 15;
+  transform: translate(-50%, -100%);
+  padding: 0.35rem 0.7rem;
+  background: var(--paper-card);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(59, 47, 42, 0.08);
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 180ms var(--ease-settle);
+}
+
+/* ==========================================================================
+   Butterfly Visitor & Faint Trail
+   ========================================================================== */
+
+.butterfly-trail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.trail-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233, 162, 59, 0.55) 0%, rgba(217, 139, 132, 0.25) 70%, transparent 100%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.butterfly {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  width: 44px;
+  height: 38px;
+  margin-left: -22px;
+  margin-top: -19px;
+  pointer-events: none;
+  will-change: transform;
+  filter: drop-shadow(0 3px 5px rgba(59, 47, 42, 0.14));
+}
+
+.butterfly-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.butterfly-wing {
+  transform-box: fill-box;
+  animation: wingFlap 0.42s ease-in-out infinite alternate;
+}
+
+.butterfly-wing--left {
+  transform-origin: right center;
+}
+
+.butterfly-wing--right {
+  transform-origin: left center;
+}
+
+@keyframes wingFlap {
+  0% {
+    transform: scaleX(1) scaleY(1);
+  }
+  100% {
+    transform: scaleX(0.56) scaleY(0.95);
+  }
+}
+
+/* ==========================================================================
+   Bottom HUD & Mobile Swipe Hint
+   ========================================================================== */
+
+.mobile-swipe-hint {
+  display: none;
+  position: fixed;
+  bottom: 4.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  background: rgba(250, 245, 234, 0.88);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  color: var(--ink);
+  pointer-events: none;
+  z-index: 18;
+  transition: opacity 400ms ease;
+}
+
+.mobile-swipe-hint.is-dismissed {
+  opacity: 0;
+}
+
+.stage-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem clamp(1rem, 2.5vw, 2rem);
+  pointer-events: none;
+}
+
+.visit-hint {
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-hand);
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.progress-cluster {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: auto;
+}
+
+.progress-readout {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.25px solid var(--ink-muted);
+  background: transparent;
+  transition: background-color 240ms var(--ease-settle), border-color 240ms var(--ease-settle);
+}
+
+.progress-dot[data-branch="crown"].is-explored {
+  background-color: var(--amber);
+  border-color: var(--amber-deep);
+}
+
+.progress-dot[data-branch="upperLeft"].is-explored {
+  background-color: var(--sage);
+  border-color: var(--sage-deep);
+}
+
+.progress-dot[data-branch="rootLeft"].is-explored {
+  background-color: var(--rose);
+  border-color: var(--rose-deep);
+}
+
+.finish-visit-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0.25rem 0;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(59, 47, 42, 0.35);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: text-decoration-color 180ms ease, color 180ms ease;
+}
+
+.finish-visit-btn:hover {
+  text-decoration-color: var(--amber-deep);
+  color: var(--amber-deep);
+}
+
+/* ==========================================================================
+   Cream Paper Note Dialog (3 Open Sections + Ending Screen)
+   ========================================================================== */
+
+.note-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  background: rgba(245, 238, 223, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 240ms var(--ease-settle);
+}
+
+.note-backdrop[hidden] {
+  display: none;
+}
+
+.note-backdrop.is-open {
+  opacity: 1;
+}
+
+.note-panel {
+  width: min(100%, 35rem);
+  max-height: min(88dvh, 44rem);
+  overflow-y: auto;
+  background: var(--paper-card);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  box-shadow: 0 22px 54px rgba(59, 47, 42, 0.14);
+  padding: clamp(1.35rem, 3.2vw, 2.25rem);
+  transform: translateY(10px) scale(0.985);
+  transition: transform 260ms var(--ease-settle);
+}
+
+.note-backdrop.is-open .note-panel {
+  transform: translateY(0) scale(1);
+}
+
+.note-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.note-kicker {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.note-back-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0.35rem 0;
+  min-height: 40px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-decoration-color: rgba(59, 47, 42, 0.28);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.note-back-btn:hover {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+.note-body {
+  padding-top: 1.35rem;
+}
+
+.panel-headline {
+  margin: 0 0 1.15rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.6vw, 1.85rem);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+/* --- Section 1: The Whole Picture (loose network) --- */
+.network-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 1rem;
+}
+
+.network-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.network-edge {
+  stroke: rgba(59, 47, 42, 0.28);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 180ms ease, stroke-width 180ms ease;
+}
+
+.network-edge.is-lit {
+  stroke: var(--amber-deep);
+  stroke-width: 2;
+  stroke-dasharray: none;
+}
+
+.network-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0.5rem 0.8rem;
+  min-height: 40px;
+  background: var(--paper);
+  border: 1px solid rgba(59, 47, 42, 0.22);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms var(--ease-settle);
+}
+
+.network-node:hover,
+.network-node:focus-visible,
+.network-node.is-active {
+  border-color: var(--amber-deep);
+  background: #fff9ed;
+  transform: translate(-50%, -50%) scale(1.03);
+}
+
+.network-node.is-connected {
+  border-color: rgba(233, 162, 59, 0.7);
+}
+
+.network-detail {
+  min-height: 1.75rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+.network-detail--empty {
+  color: var(--ink-muted);
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+}
+
+/* --- Section 2: The Noticing (quote with blur-to-focus phrases) --- */
+.noticing-quote {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.48;
+  color: var(--ink);
+}
+
+.noticing-phrase {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(59, 47, 42, 0.35);
+  padding: 0 0.12em;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  filter: blur(4px);
+  opacity: 0.45;
+  transition:
+    filter 200ms var(--ease-settle),
+    opacity 200ms var(--ease-settle),
+    border-color 180ms ease;
+}
+
+.noticing-phrase:hover,
+.noticing-phrase:focus-visible,
+.noticing-phrase.is-focused {
+  filter: blur(0);
+  opacity: 1;
+  border-bottom-color: var(--amber-deep);
+}
+
+.noticing-attribution {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  color: var(--ink-muted);
+}
+
+/* --- Section 3: The Roots --- */
+.roots-list {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.roots-item {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.roots-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.roots-note {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+}
+
+/* ==========================================================================
+   Per-Branch Leaf Notes Composer & List
+   ========================================================================== */
+
+.leaf-section {
+  margin-top: 1.5rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.leaf-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.leaf-list:not(:empty) {
+  margin-bottom: 0.9rem;
+}
+
+.leaf-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.94rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.leaf-item-icon {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  color: var(--sage-deep);
+}
+
+.leaf-form {
+  display: flex;
+  gap: 0.55rem;
+  align-items: stretch;
+}
+
+.leaf-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0.55rem 0.75rem;
+  background: var(--paper);
+  border: 1px solid rgba(59, 47, 42, 0.24);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  color: var(--ink);
+}
+
+.leaf-input::placeholder {
+  color: var(--ink-muted);
+}
+
+.leaf-submit-btn {
+  flex-shrink: 0;
+  min-height: 42px;
+  padding: 0.55rem 1rem;
+  background: var(--ink);
+  color: var(--paper-card);
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 160ms ease;
+}
+
+.leaf-submit-btn:hover {
+  background: #271e1a;
+}
+
+/* ==========================================================================
+   Ending Screen ("Your visit")
+   ========================================================================== */
+
+.ending-summary {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  color: var(--ink-muted);
+}
+
+.ending-branches {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ending-branch-group {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.ending-branch-name {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ending-branch-notes {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.94rem;
+  color: var(--ink);
+}
+
+.ending-empty {
+  margin: 0 0 1.5rem;
+  font-size: 0.94rem;
+  color: var(--ink-muted);
+}
+
+.ending-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.15rem;
+  margin-bottom: 1.15rem;
+}
+
+.ending-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.6rem 1.15rem;
+  background: var(--ink);
+  color: var(--paper-card);
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 160ms ease;
+}
+
+.ending-primary-btn:hover {
+  background: #271e1a;
+}
+
+.ending-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(59, 47, 42, 0.35);
+  text-underline-offset: 4px;
+  white-space: nowrap;
+}
+
+.ending-secondary-link:hover {
+  color: var(--amber-deep);
+  text-decoration-color: var(--amber-deep);
+}
+
+.ending-clear-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0.4rem 0;
+  min-height: 40px;
+  margin-left: auto;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-decoration-color: rgba(59, 47, 42, 0.25);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ending-clear-btn:hover {
+  color: var(--rose-deep);
+}
+
+.ending-footer-note {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+}
+
+/* ==========================================================================
+   Debug Overlay (?debug=1)
+   ========================================================================== */
+
+body.is-debug .hotspot {
+  border: 1.5px dashed #b83b2b;
+  background: rgba(233, 162, 59, 0.16);
+}
+
+body.is-debug .hotspot::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b83b2b;
+  pointer-events: none;
+}
+
+.debug-coords {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.12rem 0.35rem;
+  background: rgba(59, 47, 42, 0.9);
+  color: #faf5ea;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.25;
+  white-space: nowrap;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.debug-toolbar {
+  position: fixed;
+  top: 0.9rem;
+  right: 1rem;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.75rem;
+  background: var(--paper-card);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(59, 47, 42, 0.1);
+  font-size: 0.8rem;
+}
+
+.debug-toolbar[hidden] {
+  display: none;
+}
+
+.debug-copy-btn {
+  padding: 0.3rem 0.65rem;
+  background: var(--ink);
+  color: var(--paper-card);
+  border: none;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.debug-status {
+  color: var(--sage-deep);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Mobile Portrait Layout (~150vw horizontally scrollable stage)
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  .stage-scroller {
+    display: block;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 4.5rem 0 5.5rem;
+    scrollbar-width: none;
+  }
+
+  .stage-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tree-stage {
+    width: 150vw;
+    margin: auto 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .mobile-swipe-hint {
+    display: block;
+  }
+
+  .stage-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding-bottom: 0.75rem;
+    background: linear-gradient(
+      to top,
+      rgba(245, 238, 223, 0.95) 60%,
+      rgba(245, 238, 223, 0) 100%
+    );
+  }
+
+  .visit-hint {
+    position: static;
+    transform: none;
+    white-space: normal;
+    text-align: center;
+    font-size: 1.08rem;
+  }
+
+  .progress-cluster {
+    margin-left: 0;
+  }
+
+  .network-wrap {
+    aspect-ratio: 4 / 3;
+  }
+
+  .network-node {
+    font-size: 0.76rem;
+    padding: 0.4rem 0.55rem;
+  }
+
+  .leaf-form {
+    flex-direction: column;
+  }
+
+  .ending-clear-btn {
+    margin-left: 0;
+  }
+
+  .debug-toolbar {
+    top: 4.1rem;
+    right: 0.75rem;
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion Preference
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-veil {
+    display: none;
+  }
+
+  .pollen-layer,
+  .butterfly-trail {
+    display: none;
+  }
+
+  .butterfly-wing,
+  .hotspot-sway,
+  .hotspot.is-wiggling .hotspot-sway {
+    animation: none !important;
+  }
+
+  .noticing-phrase {
+    filter: none;
+    opacity: 1;
+  }
+
+  .note-backdrop,
+  .note-panel,
+  .hotspot-wash,
+  .hotspot-label,
+  .roots-earth-wash,
+  .mobile-swipe-hint {
+    transition: none !important;
+  }
+}
+
+/* ==========================================================================
+   Noscript Fallback
+   ========================================================================== */
+
+.noscript-fallback {
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--paper-card);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}

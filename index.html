@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soniaa S. — a living tree</title>
+    <meta
+      name="description"
+      content="An interactive sketchbook experience representing Soniaa S., Fractional CMO."
+    />
+    <meta property="og:title" content="Soniaa S. — a living tree" />
+    <meta
+      property="og:description"
+      content="An interactive sketchbook experience representing Soniaa S., Fractional CMO."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Fonts: Fraunces (headings/quotes), Caveat (handwritten hints), DM Sans (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Skip link for keyboard visitors to jump directly to the interactive branches -->
+    <a href="#tree-hotspots" class="skip-link">Skip to the tree branches</a>
+
+    <!-- Atmospheric background layers: SVG paper grain, soft vignette, golden-hour glow -->
+    <div class="paper-atmosphere" aria-hidden="true">
+      <svg class="paper-grain-svg" width="0" height="0" focusable="false">
+        <filter id="paper-grain-filter">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.78"
+            numOctaves="3"
+            stitchTiles="stitch"
+          />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+      </svg>
+      <div class="paper-grain-layer"></div>
+      <div class="paper-golden-glow"></div>
+      <div class="paper-vignette"></div>
+    </div>
+
+    <!-- Main single-viewport experience -->
+    <main class="experience" id="experience">
+      <!-- Top-left identity lockup -->
+      <header class="identity">
+        <h1 class="identity-name">Soniaa S.</h1>
+        <p class="identity-role">Fractional CMO</p>
+      </header>
+
+      <!-- Horizontally scrollable viewport wrapper on portrait mobile; centered stage on desktop -->
+      <div class="stage-scroller" id="stage-scroller">
+        <div class="tree-stage" id="tree-stage">
+          <!-- Warm earth watercolor wash below the ground line when The Roots opens -->
+          <div class="roots-earth-wash" id="roots-earth-wash" aria-hidden="true"></div>
+
+          <!-- Hand-drawn pencil sketch (transparent WebP derivatives with JPEG fallback) -->
+          <picture class="tree-picture">
+            <source
+              srcset="assets/tree-2000.webp 2000w, assets/tree-1000.webp 1000w"
+              sizes="(max-width: 767px) 150vw, 100vw"
+              type="image/webp"
+            />
+            <img
+              id="tree-image"
+              class="tree-image"
+              src="assets/tree-original.jpeg"
+              alt="Hand-drawn pencil sketch of a tree with five branches, roots beneath a ground line, and the handwritten caption Crafting Brands"
+              width="2272"
+              height="1884"
+              decoding="async"
+            />
+          </picture>
+
+          <!-- Ground-upward intro veils (transform + opacity only) -->
+          <div class="intro-veil intro-veil--canopy" aria-hidden="true"></div>
+          <div class="intro-veil intro-veil--roots" aria-hidden="true"></div>
+
+          <!-- Drifting pollen / dust motes container -->
+          <div class="pollen-layer" id="pollen-layer" aria-hidden="true"></div>
+
+          <!-- Interactive tip hotspots layer populated from content.js -->
+          <div
+            class="tree-hotspots"
+            id="tree-hotspots"
+            role="region"
+            aria-label="Tree branches and roots"
+          ></div>
+
+          <!-- Bud tooltip ("Still growing: a next experiment.") -->
+          <div
+            class="bud-tooltip"
+            id="bud-tooltip"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
+
+          <!-- Butterfly trail + inline watercolor SVG butterfly -->
+          <div class="butterfly-trail" id="butterfly-trail" aria-hidden="true"></div>
+          <div class="butterfly" id="butterfly" aria-hidden="true">
+            <svg
+              class="butterfly-svg"
+              viewBox="0 0 64 56"
+              width="44"
+              height="38"
+              focusable="false"
+            >
+              <defs>
+                <radialGradient id="wing-amber" cx="40%" cy="40%" r="65%">
+                  <stop offset="0%" stop-color="#F5C469" stop-opacity="0.92" />
+                  <stop offset="65%" stop-color="#E9A23B" stop-opacity="0.82" />
+                  <stop offset="100%" stop-color="#D98B84" stop-opacity="0.72" />
+                </radialGradient>
+                <radialGradient id="wing-rose" cx="50%" cy="45%" r="65%">
+                  <stop offset="0%" stop-color="#EBA89F" stop-opacity="0.88" />
+                  <stop offset="75%" stop-color="#D98B84" stop-opacity="0.78" />
+                  <stop offset="100%" stop-color="#C3716A" stop-opacity="0.65" />
+                </radialGradient>
+              </defs>
+              <!-- Left wings -->
+              <g class="butterfly-wing butterfly-wing--left">
+                <path
+                  d="M31 27 C23 11, 5 6, 4 19 C3 28, 17 31, 31 29 Z"
+                  fill="url(#wing-amber)"
+                  stroke="#3B2F2A"
+                  stroke-width="0.9"
+                  stroke-opacity="0.5"
+                />
+                <path
+                  d="M31 30 C20 31, 8 38, 13 46 C18 53, 29 44, 31 33 Z"
+                  fill="url(#wing-rose)"
+                  stroke="#3B2F2A"
+                  stroke-width="0.8"
+                  stroke-opacity="0.45"
+                />
+              </g>
+              <!-- Right wings -->
+              <g class="butterfly-wing butterfly-wing--right">
+                <path
+                  d="M33 27 C41 11, 59 6, 60 19 C61 28, 47 31, 33 29 Z"
+                  fill="url(#wing-amber)"
+                  stroke="#3B2F2A"
+                  stroke-width="0.9"
+                  stroke-opacity="0.5"
+                />
+                <path
+                  d="M33 30 C44 31, 56 38, 51 46 C46 53, 35 44, 33 33 Z"
+                  fill="url(#wing-rose)"
+                  stroke="#3B2F2A"
+                  stroke-width="0.8"
+                  stroke-opacity="0.45"
+                />
+              </g>
+              <!-- Body & antennae -->
+              <path
+                d="M32 19 L32 41"
+                stroke="#3B2F2A"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <path
+                d="M31.5 19 C29 14, 26 11, 24 11 M32.5 19 C35 14, 38 11, 40 11"
+                fill="none"
+                stroke="#3B2F2A"
+                stroke-width="1"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portrait mobile swipe cue (fades on first scroll/touch) -->
+      <p class="mobile-swipe-hint" id="mobile-swipe-hint" aria-hidden="true">
+        Swipe to explore
+      </p>
+
+      <!-- Bottom HUD: poetic prompt + exploration progress + finish trigger -->
+      <footer class="stage-footer">
+        <p class="visit-hint" id="visit-hint">
+          You're the butterfly. Drift toward what draws you.
+        </p>
+
+        <div class="progress-cluster">
+          <div class="progress-readout" id="progress-readout">
+            <span class="progress-dots" id="progress-dots" aria-hidden="true">
+              <span class="progress-dot" data-branch="crown"></span>
+              <span class="progress-dot" data-branch="upperLeft"></span>
+              <span class="progress-dot" data-branch="rootLeft"></span>
+            </span>
+            <span class="progress-text" id="progress-text">0 of 3 explored</span>
+          </div>
+          <button
+            type="button"
+            class="finish-visit-btn"
+            id="finish-visit-btn"
+            hidden
+          >
+            Finish my visit
+          </button>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Debug overlay toolbar (?debug=1) -->
+    <aside class="debug-toolbar" id="debug-toolbar" hidden aria-label="Hotspot debug controls">
+      <span class="debug-badge">Debug mode: drag tips to adjust</span>
+      <button type="button" class="debug-copy-btn" id="debug-copy-btn">
+        Copy JSON
+      </button>
+      <span class="debug-status" id="debug-status" aria-live="polite"></span>
+    </aside>
+
+    <!-- Cream paper "note" dialog for the 3 open branches & the ending screen -->
+    <div
+      class="note-backdrop"
+      id="note-backdrop"
+      hidden
+      aria-hidden="true"
+    >
+      <div
+        class="note-panel"
+        id="note-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="note-title"
+        tabindex="-1"
+      >
+        <div class="note-header">
+          <p class="note-kicker" id="note-title"></p>
+          <button
+            type="button"
+            class="note-back-btn"
+            id="note-back-btn"
+          >
+            Back to the tree
+          </button>
+        </div>
+
+        <div class="note-body" id="note-body"></div>
+
+        <!-- Per-branch leaf note composer (shown for the 3 open branches) -->
+        <section class="leaf-section" id="leaf-section" hidden>
+          <ul class="leaf-list" id="leaf-list" aria-label="Your notes on this branch"></ul>
+          <form class="leaf-form" id="leaf-form">
+            <label for="leaf-input" class="sr-only">Leave a note on this branch</label>
+            <input
+              type="text"
+              id="leaf-input"
+              class="leaf-input"
+              maxlength="280"
+              placeholder="What stood out to you?"
+              autocomplete="off"
+            />
+            <button type="submit" class="leaf-submit-btn" id="leaf-submit-btn">
+              Leave a leaf
+            </button>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <!-- Accessible plain-text fallback when JavaScript is disabled -->
+    <noscript>
+      <section class="noscript-fallback">
+        <h1>Soniaa S. — Fractional CMO</h1>
+        <h2>The Whole Picture: Seeing the whole picture</h2>
+        <ul>
+          <li>Brand → Revenue: Brand affects revenue.</li>
+          <li>Messaging → Conversion: Messaging affects conversion.</li>
+          <li>Operations → Execution: Operations affect execution.</li>
+          <li>People → Everything: People affect everything.</li>
+        </ul>
+        <h2>The Noticing</h2>
+        <blockquote>
+          "I notice what others don't. The gaps, the confusion, the unspoken story, and I help make sense of it."
+          — In her own words
+        </blockquote>
+        <h2>The Roots</h2>
+        <ul>
+          <li>IIM Bangalore — Executive MBA, Marketing, 2007–2008</li>
+          <li>Symbiosis Institute of Management Studies — PGDBM, Marketing &amp; Sales, 2007–2009</li>
+        </ul>
+        <p>Two of five educations shown.</p>
+        <p>
+          <a href="https://www.linkedin.com/in/soniaspecialist/">Open her LinkedIn</a>
+        </p>
+      </section>
+    </noscript>
+
+    <script defer src="content.js"></script>
+    <script defer src="app.js"></script>
+  </body>
+</html>

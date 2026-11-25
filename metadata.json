@@ -1,0 +1,6 @@
+{
+  "name": "Soniaa S. — a living tree",
+  "description": "An interactive sketchbook experience representing Soniaa S., Fractional CMO.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
