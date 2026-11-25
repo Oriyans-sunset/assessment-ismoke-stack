@@ -132,6 +132,7 @@
       amber: { petal: "#E9A23B", inner: "#F7D08A", center: "#3B2F2A" },
       sage: { petal: "#8FA98A", inner: "#BFD1BB", center: "#3B2F2A" },
       rose: { petal: "#D98B84", inner: "#EEB7B2", center: "#3B2F2A" },
+      blue: { petal: "#7FA6C9", inner: "#C2D8EC", center: "#3B2F2A" },
     }[colorName] || { petal: "#E9A23B", inner: "#F7D08A", center: "#3B2F2A" };
 
     const svg = createSvgElement("svg", {
@@ -185,6 +186,7 @@
         amber: "#E9A23B",
         sage: "#8FA98A",
         rose: "#D98B84",
+        blue: "#7FA6C9",
       }[colorName] || "#8FA98A";
 
     const svg = createSvgElement("svg", {
@@ -242,6 +244,86 @@
     return svg;
   }
 
+  function buildSeedShellSvg(tintName) {
+    const palette = {
+      chestnut: { coat: "#B88963", fillOpacity: "0.42", highlight: "#EEDCC8" },
+      walnut: { coat: "#9E7352", fillOpacity: "0.38", highlight: "#E6D2BE" },
+      hazelnut: { coat: "#C69F79", fillOpacity: "0.44", highlight: "#F2E4D2" },
+      almond: { coat: "#D2B28E", fillOpacity: "0.46", highlight: "#F5EAD8" },
+    }[tintName] || { coat: "#C69F79", fillOpacity: "0.44", highlight: "#F2E4D2" };
+
+    const svg = createSvgElement("svg", {
+      viewBox: "0 0 220 80",
+      preserveAspectRatio: "none",
+      class: "seed-shell",
+      "aria-hidden": "true",
+      focusable: "false",
+    });
+
+    /* Tiny sprout emerging from the pointed tip on hover/tap */
+    const sprout = createSvgElement("g", { class: "seed-sprout" });
+    sprout.appendChild(
+      createSvgElement("path", {
+        d: "M12 40 C6 35, 3 27, 8 22 C12 27, 13 34, 12 40 Z",
+        fill: "#8FA98A",
+        "fill-opacity": "0.88",
+        stroke: "#3B2F2A",
+        "stroke-width": "1",
+        "vector-effect": "non-scaling-stroke",
+      })
+    );
+    sprout.appendChild(
+      createSvgElement("path", {
+        d: "M12 40 C7 43, 2 48, 5 54 C10 51, 12 45, 12 40 Z",
+        fill: "#BFD1BB",
+        "fill-opacity": "0.88",
+        stroke: "#3B2F2A",
+        "stroke-width": "1",
+        "vector-effect": "non-scaling-stroke",
+      })
+    );
+
+    /* Organic pointed botanical seed hull */
+    const hull = createSvgElement("path", {
+      d: "M12 40 C40 6, 162 4, 200 18 C216 25, 216 55, 200 62 C162 76, 40 74, 12 40 Z",
+      fill: palette.coat,
+      "fill-opacity": palette.fillOpacity,
+      stroke: "#3B2F2A",
+      "stroke-width": "1.1",
+      "stroke-opacity": "0.52",
+      "stroke-linejoin": "round",
+      "vector-effect": "non-scaling-stroke",
+      class: "seed-hull",
+    });
+
+    /* Subtle watercolor highlight & seed-coat crease inside the hull */
+    const sheen = createSvgElement("path", {
+      d: "M42 22 C86 12, 152 12, 190 22",
+      fill: "none",
+      stroke: palette.highlight,
+      "stroke-width": "2.2",
+      "stroke-opacity": "0.85",
+      "stroke-linecap": "round",
+      "vector-effect": "non-scaling-stroke",
+    });
+
+    const crease = createSvgElement("path", {
+      d: "M34 56 C78 67, 148 67, 186 58",
+      fill: "none",
+      stroke: "#3B2F2A",
+      "stroke-width": "0.8",
+      "stroke-opacity": "0.22",
+      "stroke-linecap": "round",
+      "vector-effect": "non-scaling-stroke",
+    });
+
+    svg.appendChild(sprout);
+    svg.appendChild(hull);
+    svg.appendChild(sheen);
+    svg.appendChild(crease);
+    return svg;
+  }
+
   /* ========================================================================
      3. Render hotspots & sync explored / leaf / roots-earth states
      ======================================================================== */
@@ -266,8 +348,9 @@
       const sway = document.createElement("span");
       sway.className = "hotspot-sway";
       sway.setAttribute("aria-hidden", "true");
+      const isRootSpot = spot.id === "rootLeft" || spot.id === "rootRight";
       sway.appendChild(
-        spot.status === "open"
+        spot.status === "open" && !isRootSpot
           ? buildBlossomSvg(spot.bloomColor)
           : buildBudSvg(spot.bloomColor)
       );
@@ -325,8 +408,11 @@
       btn.classList.toggle("has-leaf", branchLeaves.length > 0);
     });
 
-    /* Nice-to-have: opening The Roots warms the below-ground area in earth tone */
-    treeStage.classList.toggle("is-roots-warmed", exploredSet.has("rootLeft"));
+    /* Nice-to-have: opening either Root warms the below-ground area in earth tone */
+    treeStage.classList.toggle(
+      "is-roots-warmed",
+      exploredSet.has("rootLeft") || exploredSet.has("rootRight")
+    );
 
     const count = state.explored.length;
     progressText.textContent = `${count} of ${CONTENT.meta.totalOpenBranches} explored`;
@@ -763,8 +849,16 @@
     const data = CONTENT.sections.crown;
 
     const headline = document.createElement("h2");
-    headline.className = "panel-headline";
-    headline.textContent = data.headline;
+    headline.className = "panel-headline panel-headline--crown";
+    data.headlineParts.forEach((part) => {
+      if (part.italic) {
+        const em = document.createElement("em");
+        em.textContent = part.text;
+        headline.appendChild(em);
+      } else {
+        headline.appendChild(document.createTextNode(part.text));
+      }
+    });
     container.appendChild(headline);
 
     const wrap = document.createElement("div");
@@ -881,39 +975,146 @@
       }
     });
 
-    const attribution = document.createElement("p");
-    attribution.className = "noticing-attribution";
-    attribution.textContent = data.attribution;
-
     container.appendChild(blockquote);
-    container.appendChild(attribution);
   }
 
-  /* --- Render Branch 3: The Roots --- */
-  function renderRootsBody(container) {
-    const data = CONTENT.sections.rootLeft;
+  /* --- Render Branch 3 & 5: The Roots (education card) --- */
+  function renderEducationCardBody(container, edu) {
+    if (!edu) return;
 
-    const headline = document.createElement("h2");
-    headline.className = "panel-headline";
-    headline.textContent = data.headline;
+    const card = document.createElement("div");
+    card.className = "root-education-card";
+
+    const school = document.createElement("p");
+    school.className = "root-education-school";
+    school.textContent = edu.school;
+
+    const degree = document.createElement("p");
+    degree.className = "root-education-degree";
+    degree.textContent = edu.degree;
+
+    const years = document.createElement("p");
+    years.className = "root-education-years";
+    years.textContent = edu.years;
+
+    const activities = document.createElement("p");
+    activities.className = "root-education-activities";
+    activities.textContent = edu.activities;
+
+    card.appendChild(school);
+    card.appendChild(degree);
+    card.appendChild(years);
+    card.appendChild(activities);
+    container.appendChild(card);
+  }
+
+  /* --- Render Branch 4: The Journey --- */
+  function renderJourneyBody(container) {
+    const data = CONTENT.sections.upperRight;
 
     const list = document.createElement("ul");
-    list.className = "roots-list";
+    list.className = "journey-list";
 
-    data.items.forEach((itemText) => {
+    data.items.forEach((entry) => {
       const li = document.createElement("li");
-      li.className = "roots-item";
-      li.textContent = itemText;
+      li.className = "journey-box";
+
+      const role = document.createElement("p");
+      role.className = "journey-role";
+      role.textContent = entry.role;
+
+      const company = document.createElement("p");
+      company.className = "journey-company";
+      company.textContent = entry.company;
+
+      li.appendChild(role);
+      li.appendChild(company);
       list.appendChild(li);
     });
 
-    const note = document.createElement("p");
-    note.className = "roots-note";
-    note.textContent = data.note;
-
-    container.appendChild(headline);
     container.appendChild(list);
-    container.appendChild(note);
+  }
+
+  /* --- Render Branch 6: The Problem Solving (recommendations) --- */
+  function renderProblemSolvingBody(container) {
+    const data = CONTENT.sections.midRight;
+
+    const list = document.createElement("ul");
+    list.className = "recommendation-list";
+
+    data.recommendations.forEach((rec) => {
+      const li = document.createElement("li");
+      li.className = "recommendation-card";
+
+      const quote = document.createElement("blockquote");
+      quote.className = "recommendation-quote";
+      quote.textContent = rec.quote;
+
+      const meta = document.createElement("div");
+      meta.className = "recommendation-meta";
+
+      const author = document.createElement("p");
+      author.className = "recommendation-author";
+      author.textContent = rec.author;
+
+      const context = document.createElement("p");
+      context.className = "recommendation-context";
+      context.textContent = rec.context;
+
+      meta.appendChild(author);
+      if (rec.headline) {
+        const headline = document.createElement("p");
+        headline.className = "recommendation-headline";
+        headline.textContent = rec.headline;
+        meta.appendChild(headline);
+      }
+      meta.appendChild(context);
+
+      li.appendChild(quote);
+      li.appendChild(meta);
+      list.appendChild(li);
+    });
+
+    container.appendChild(list);
+  }
+
+  /* --- Render Branch 7: The Guiding (scattered seed-shaped containers on canvas) --- */
+  function renderGuidingBody(container) {
+    const data = CONTENT.sections.midLeft;
+
+    const canvas = document.createElement("div");
+    canvas.className = "seed-canvas";
+    canvas.setAttribute("role", "list");
+    canvas.setAttribute("aria-label", "Problem solving skills scattered as seeds");
+
+    data.seeds.forEach((seed) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `seed-item seed-item--${seed.tint}${
+        seed.flip ? " seed-item--flip" : ""
+      }`;
+      btn.setAttribute("role", "listitem");
+      btn.setAttribute("aria-pressed", "false");
+      btn.style.setProperty("--seed-x", `${seed.x}%`);
+      btn.style.setProperty("--seed-y", `${seed.y}%`);
+      btn.style.setProperty("--seed-rot", `${seed.rot}deg`);
+
+      btn.appendChild(buildSeedShellSvg(seed.tint));
+
+      const label = document.createElement("span");
+      label.className = "seed-label";
+      label.textContent = seed.label;
+      btn.appendChild(label);
+
+      btn.addEventListener("click", () => {
+        const sprouted = btn.classList.toggle("is-sprouted");
+        btn.setAttribute("aria-pressed", sprouted ? "true" : "false");
+      });
+
+      canvas.appendChild(btn);
+    });
+
+    container.appendChild(canvas);
   }
 
   /* --- Per-branch Leaf Notes Rendering (strictly via textContent) --- */
@@ -953,6 +1154,7 @@
     if (!section) return;
 
     activeDialogMode = branchId;
+    notePanel.classList.toggle("note-panel--wide", branchId === "midLeft");
     noteTitle.textContent = section.title;
     noteBody.textContent = "";
 
@@ -960,8 +1162,14 @@
       renderCrownBody(noteBody);
     } else if (branchId === "upperLeft") {
       renderUpperLeftBody(noteBody);
-    } else if (branchId === "rootLeft") {
-      renderRootsBody(noteBody);
+    } else if (branchId === "upperRight") {
+      renderJourneyBody(noteBody);
+    } else if (branchId === "midLeft") {
+      renderGuidingBody(noteBody);
+    } else if (branchId === "midRight") {
+      renderProblemSolvingBody(noteBody);
+    } else if (branchId === "rootLeft" || branchId === "rootRight") {
+      renderEducationCardBody(noteBody, section.education);
     }
 
     leafSection.hidden = false;
@@ -1048,16 +1256,13 @@
   function openEndingDialog() {
     hideBudTooltip();
     activeDialogMode = "ending";
+    notePanel.classList.remove("note-panel--wide");
     lastTriggerEl = finishVisitBtn;
 
     const endCopy = CONTENT.ending;
     noteTitle.textContent = endCopy.headline;
     noteBody.textContent = "";
     leafSection.hidden = true;
-
-    const headline = document.createElement("h2");
-    headline.className = "panel-headline";
-    headline.textContent = endCopy.headline;
 
     const summary = document.createElement("p");
     summary.className = "ending-summary";
@@ -1066,7 +1271,6 @@
       String(state.explored.length)
     );
 
-    noteBody.appendChild(headline);
     noteBody.appendChild(summary);
 
     const branchesWithNotes = hotspotsData.filter(

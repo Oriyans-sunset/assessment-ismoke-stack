@@ -14,6 +14,8 @@
   --sage-deep: #4e6b4a;
   --rose: #d98b84;
   --rose-deep: #a4564f;
+  --blue: #7fa6c9;
+  --blue-deep: #436a8e;
   --hairline: rgba(59, 47, 42, 0.14);
 
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
@@ -160,13 +162,6 @@ body {
   line-height: 1.1;
   letter-spacing: -0.015em;
   color: var(--ink);
-}
-
-.identity-role {
-  margin: 0.15rem 0 0;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  color: var(--ink-muted);
 }
 
 /* Stage wrapper: fits viewport on desktop, scrollable 150vw on portrait mobile */
@@ -391,6 +386,10 @@ body {
   background: radial-gradient(circle, rgba(217, 139, 132, 0.65) 0%, rgba(217, 139, 132, 0.14) 60%, transparent 78%);
 }
 
+.hotspot--blue .hotspot-wash {
+  background: radial-gradient(circle, rgba(127, 166, 201, 0.65) 0%, rgba(127, 166, 201, 0.14) 60%, transparent 78%);
+}
+
 .hotspot--bud .hotspot-wash {
   opacity: 0.08;
   transform: scale(0.5);
@@ -612,7 +611,7 @@ body {
 .mobile-swipe-hint {
   display: none;
   position: fixed;
-  bottom: 4.1rem;
+  bottom: 3rem;
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
@@ -640,22 +639,10 @@ body {
   z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
   padding: 0.65rem clamp(1rem, 2.5vw, 2rem);
   pointer-events: none;
-}
-
-.visit-hint {
-  margin: 0;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-hand);
-  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
-  font-weight: 500;
-  color: var(--ink);
-  white-space: nowrap;
 }
 
 .progress-cluster {
@@ -700,9 +687,29 @@ body {
   border-color: var(--sage-deep);
 }
 
+.progress-dot[data-branch="upperRight"].is-explored {
+  background-color: var(--rose);
+  border-color: var(--rose-deep);
+}
+
+.progress-dot[data-branch="midLeft"].is-explored {
+  background-color: var(--blue);
+  border-color: var(--blue-deep);
+}
+
+.progress-dot[data-branch="midRight"].is-explored {
+  background-color: var(--sage);
+  border-color: var(--sage-deep);
+}
+
 .progress-dot[data-branch="rootLeft"].is-explored {
   background-color: var(--rose);
   border-color: var(--rose-deep);
+}
+
+.progress-dot[data-branch="rootRight"].is-explored {
+  background-color: var(--sage);
+  border-color: var(--sage-deep);
 }
 
 .finish-visit-btn {
@@ -756,7 +763,7 @@ body {
 
 .note-panel {
   width: min(100%, 35rem);
-  max-height: min(88dvh, 44rem);
+  max-height: min(88dvh, 48rem);
   overflow-y: auto;
   background: var(--paper-card);
   border: 1px solid var(--hairline);
@@ -765,6 +772,10 @@ body {
   padding: clamp(1.35rem, 3.2vw, 2.25rem);
   transform: translateY(10px) scale(0.985);
   transition: transform 260ms var(--ease-settle);
+}
+
+.note-panel--wide {
+  width: min(100%, 40rem);
 }
 
 .note-backdrop.is-open .note-panel {
@@ -824,6 +835,12 @@ body {
   line-height: 1.2;
   color: var(--ink);
   text-wrap: balance;
+}
+
+.panel-headline--crown {
+  font-size: clamp(1.22rem, 2.15vw, 1.52rem);
+  font-weight: 400;
+  line-height: 1.35;
 }
 
 /* --- Section 1: The Whole Picture (loose network) --- */
@@ -904,7 +921,7 @@ body {
 
 /* --- Section 2: The Noticing (quote with blur-to-focus phrases) --- */
 .noticing-quote {
-  margin: 0 0 1rem;
+  margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 2.5vw, 1.75rem);
   font-weight: 400;
@@ -938,16 +955,9 @@ body {
   border-bottom-color: var(--amber-deep);
 }
 
-.noticing-attribution {
-  margin: 0;
-  font-family: var(--font-hand);
-  font-size: 1.25rem;
-  color: var(--ink-muted);
-}
-
 /* --- Section 3: The Roots --- */
 .roots-list {
-  margin: 0 0 1.25rem;
+  margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
@@ -967,10 +977,257 @@ body {
   padding-bottom: 0;
 }
 
-.roots-note {
+/* --- Section 4: The Journey (experience boxes) --- */
+.journey-list {
   margin: 0;
-  font-size: 0.875rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.journey-box {
+  padding: 0.85rem 1rem;
+  background: var(--paper);
+  border: 1px solid rgba(59, 47, 42, 0.18);
+  border-radius: 8px;
+}
+
+.journey-role {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.04rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.journey-company {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
   color: var(--ink-muted);
+}
+
+/* --- Section 5: What she cares about (rootRight education card) --- */
+.root-education-card {
+  padding: 1rem 1.15rem;
+  background: var(--paper);
+  border: 1px solid rgba(59, 47, 42, 0.18);
+  border-radius: 8px;
+}
+
+.root-education-school {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.root-education-degree {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  color: var(--ink);
+}
+
+.root-education-years {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.root-education-activities {
+  margin: 0.85rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* --- Section 6: The Problem Solving (recommendations) --- */
+.recommendation-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.95rem;
+}
+
+.recommendation-card {
+  padding: 1rem 1.15rem;
+  background: var(--paper);
+  border: 1px solid rgba(59, 47, 42, 0.18);
+  border-radius: 8px;
+}
+
+.recommendation-quote {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.58;
+  color: var(--ink);
+}
+
+.recommendation-meta {
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.recommendation-author {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.recommendation-headline {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+.recommendation-context {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+
+/* --- Section 7: The Guiding (scattered seed-shaped containers on canvas) --- */
+.seed-canvas {
+  position: relative;
+  width: 100%;
+  height: 27rem;
+  margin: 0.15rem 0 0.2rem;
+  background:
+    radial-gradient(circle at 24% 22%, rgba(164, 114, 72, 0.1), transparent 52%),
+    radial-gradient(circle at 76% 68%, rgba(184, 137, 99, 0.09), transparent 50%),
+    radial-gradient(circle at 46% 88%, rgba(158, 115, 82, 0.08), transparent 46%),
+    var(--paper);
+  border: 1px dashed rgba(59, 47, 42, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.seed-item {
+  position: absolute;
+  left: var(--seed-x);
+  top: var(--seed-y);
+  transform: translate(-50%, -50%) rotate(var(--seed-rot, 0deg));
+  appearance: none;
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.92rem 1.45rem 0.92rem 2.2rem;
+  min-height: 54px;
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+  white-space: nowrap;
+  cursor: pointer;
+  filter: drop-shadow(0 3px 6px rgba(59, 47, 42, 0.08));
+  transition:
+    transform 200ms var(--ease-settle),
+    filter 180ms ease;
+}
+
+.seed-item--flip {
+  padding: 0.92rem 2.2rem 0.92rem 1.45rem;
+}
+
+.seed-shell {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.seed-item--flip .seed-shell {
+  transform: scaleX(-1);
+}
+
+.seed-hull {
+  transition:
+    stroke 180ms ease,
+    stroke-opacity 180ms ease,
+    fill-opacity 180ms ease;
+}
+
+.seed-sprout {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center center;
+  transform: scale(0.75);
+  transition: opacity 200ms var(--ease-settle), transform 220ms var(--ease-settle);
+}
+
+.seed-item:hover,
+.seed-item:focus-visible,
+.seed-item.is-sprouted {
+  z-index: 2;
+  transform: translate(-50%, -53%) rotate(0deg) scale(1.05);
+  filter: drop-shadow(0 6px 12px rgba(59, 47, 42, 0.14));
+}
+
+.seed-item:hover .seed-hull,
+.seed-item:focus-visible .seed-hull,
+.seed-item.is-sprouted .seed-hull {
+  stroke-opacity: 0.92;
+  fill-opacity: 0.56;
+}
+
+.seed-item--chestnut:hover .seed-hull,
+.seed-item--chestnut:focus-visible .seed-hull,
+.seed-item--chestnut.is-sprouted .seed-hull {
+  stroke: #5c3d28;
+}
+
+.seed-item--walnut:hover .seed-hull,
+.seed-item--walnut:focus-visible .seed-hull,
+.seed-item--walnut.is-sprouted .seed-hull {
+  stroke: #4b3222;
+}
+
+.seed-item--hazelnut:hover .seed-hull,
+.seed-item--hazelnut:focus-visible .seed-hull,
+.seed-item--hazelnut.is-sprouted .seed-hull {
+  stroke: #6b4b30;
+}
+
+.seed-item--almond:hover .seed-hull,
+.seed-item--almond:focus-visible .seed-hull,
+.seed-item--almond.is-sprouted .seed-hull {
+  stroke: #735538;
+}
+
+.seed-item:hover .seed-sprout,
+.seed-item:focus-visible .seed-sprout,
+.seed-item.is-sprouted .seed-sprout {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.seed-label {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
 }
 
 /* ==========================================================================
@@ -1284,14 +1541,6 @@ body.is-debug .hotspot::after {
     );
   }
 
-  .visit-hint {
-    position: static;
-    transform: none;
-    white-space: normal;
-    text-align: center;
-    font-size: 1.08rem;
-  }
-
   .progress-cluster {
     margin-left: 0;
   }
@@ -1316,6 +1565,35 @@ body.is-debug .hotspot::after {
   .debug-toolbar {
     top: 4.1rem;
     right: 0.75rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .seed-canvas {
+    height: auto;
+    padding: 0.95rem 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem 0.5rem;
+  }
+
+  .seed-item {
+    position: static;
+    transform: rotate(var(--seed-rot, 0deg));
+    padding: 0.85rem 1.35rem 0.85rem 2rem;
+    white-space: normal;
+  }
+
+  .seed-item--flip {
+    padding: 0.85rem 2rem 0.85rem 1.35rem;
+  }
+
+  .seed-item:hover,
+  .seed-item:focus-visible,
+  .seed-item.is-sprouted {
+    transform: rotate(0deg) scale(1.03);
   }
 }
 
@@ -1349,7 +1627,9 @@ body.is-debug .hotspot::after {
   .hotspot-wash,
   .hotspot-label,
   .roots-earth-wash,
-  .mobile-swipe-hint {
+  .mobile-swipe-hint,
+  .seed-item,
+  .seed-sprout {
     transition: none !important;
   }
 }
